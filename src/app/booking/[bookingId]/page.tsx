@@ -6,6 +6,8 @@ import axios from "axios";
 import { Schedule } from "@/app/types";
 import { MdOutlinePersonOutline } from "react-icons/md";
 import { getUserIdFromToken, getUserIdOnlyFromToken } from "@/app/helpers/jwt";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
@@ -17,17 +19,19 @@ const BookingId = ({ params }: { params: { bookingId: string } }) => {
   const [testType, setTestType] = useState<string>("Paper Based");
   const [testSystem, setTestSystem] = useState<string>("Academic");
   const [scheduleData, setScheduleData] = useState<Schedule[]>([]);
+  const [scheduleId, setScheduleId] = useState<string | null>(null);
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
 
   //console.log(userId);
+  const router = useRouter();
 
   // Function to fetch schedule data based on selected date
   const fetchScheduleData = async (selectedDate: Date) => {
     try {
       const formattedDate = selectedDate.toLocaleDateString("en-CA");
       const response = await axios.get(
-        `http://localhost:5000/api/v1/schedule/${formattedDate}`
+        `http://localhost:5000/api/v1/schedule/${formattedDate}/${params.bookingId}`
       );
       setScheduleData(response.data.schedules);
     } catch (error) {
@@ -46,13 +50,15 @@ const BookingId = ({ params }: { params: { bookingId: string } }) => {
       fetchScheduleData(value);
     }
   }, [value]);
-  const handleSlotSelect = (slotId: string) => {
+  const handleSlotSelect = (slotId: string, scheduleId: string) => {
     setSelectedSlotId(slotId);
+    setScheduleId(scheduleId);
   };
 
   const handleProceed = async () => {
     if (selectedSlotId) {
       try {
+        console.log("come", userId);
         console.log(selectedSlotId, testType, testSystem);
         // Make the API call to book the selected slot
         const response = await axios.post(
@@ -60,17 +66,18 @@ const BookingId = ({ params }: { params: { bookingId: string } }) => {
           {
             slotId: selectedSlotId,
             userId,
-            scheduleId: params.bookingId,
+            scheduleId: scheduleId,
             status: "active",
             testType,
             testSystem,
           }
         );
         //console.log("Booking successful:", response.data);
-        alert("Slot booked successfully!"); // Optional: show confirmation to the user
-      } catch (error) {
+        toast.success("Slot booked successfully!");
+        router.push(`/dashboard`); // Optional: show confirmation to the user
+      } catch (error: any) {
         console.error("Error booking slot:", error);
-        alert("Failed to book the slot. Please try again."); // Optional: show error to the user
+        toast.error(error.response.data.message);
       }
     }
   };
@@ -134,7 +141,7 @@ const BookingId = ({ params }: { params: { bookingId: string } }) => {
                         ? "bg-yellow-300"
                         : "bg-gray-100"
                     } hover:bg-[#FACE39] cursor-pointer`}
-                    onClick={() => handleSlotSelect(slot.slotId)}
+                    onClick={() => handleSlotSelect(slot.slotId, schedule._id)}
                   >
                     <div className="grid grid-cols-2">
                       <div>

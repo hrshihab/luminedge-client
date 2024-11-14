@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { getUserIdFromToken } from "../helpers/jwt";
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 export type FormValues = {
   email: string;
@@ -57,6 +58,7 @@ const LoginPage = () => {
 
       if (response.accessToken) {
         toast.success("Successfully logged in");
+        Cookies.set("accessToken", response.accessToken, { expires: 1 }); // Expires in 1 day
         localStorage.setItem("accessToken", response.accessToken);
 
         const userData = await getUserIdFromToken(); // Get user details from token
