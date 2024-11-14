@@ -24,7 +24,7 @@ const TableAdmin = () => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/v1/admin/users"
+          "https://luminedge-mock-test-booking-server.vercel.app/api/v1/admin/users"
         );
         setUsers(response.data.users);
       } catch (error) {
@@ -39,9 +39,12 @@ const TableAdmin = () => {
   const onChangeStatus = async (userId: string, newStatus: string) => {
     console.log(userId, newStatus);
     try {
-      await axios.put(`http://localhost:5000/api/v1/user/status/${userId}`, {
-        status: newStatus,
-      });
+      await axios.put(
+        `https://luminedge-mock-test-booking-server.vercel.app/api/v1/user/status/${userId}`,
+        {
+          status: newStatus,
+        }
+      );
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
           user._id === userId ? { ...user, status: newStatus } : user

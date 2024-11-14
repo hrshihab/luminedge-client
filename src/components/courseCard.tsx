@@ -6,7 +6,7 @@ import { FaLongArrowAltRight } from "react-icons/fa";
 import Link from "next/link";
 
 const CourseCard = ({ course }: { course: Course }) => {
-  console.log(course);
+  // console.log(course);
   return (
     <div className="card bg-base-100 w-[280px] h-[300px] shadow-xl rounded-lg text-white hover:text-black">
       <figure>
