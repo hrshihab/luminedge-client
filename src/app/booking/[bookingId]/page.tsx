@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import axios from "axios";
-import { Schedule } from "@/app/types";
 import { MdOutlinePersonOutline } from "react-icons/md";
 import { getUserIdFromToken, getUserIdOnlyFromToken } from "@/app/helpers/jwt";
 import { useRouter } from "next/navigation";
@@ -11,10 +10,25 @@ import toast from "react-hot-toast";
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
+type TimeSlot = {
+  slotId: string;
+  startTime: string; // e.g., "08:00:00"
+  endTime: string; // e.g., "08:30:00"
+  slot: number;
+};
+
+type Schedule = {
+  _id: string; // Unique identifier for the schedule
+  courseId: string; // ID of the course associated with this schedule
+  startDate: string; // Start date in "YYYY-MM-DD" format
+  endDate: string; // End date in "YYYY-MM-DD" format
+  timeSlots: TimeSlot[]; // Array of time slots
+  testSystem: string; // Type of test system, e.g., "Computer-Based"
+  testType: string; // Type of test, e.g., "IELTS"
+  status: string; // Status of the schedule, e.g., "Scheduled"
+};
 
 const BookingId = ({ params }: { params: { bookingId: string } }) => {
-  console.log(params);
-
   const [value, onChange] = useState<Value>(new Date());
   const [testType, setTestType] = useState<string>("Paper Based");
   const [testSystem, setTestSystem] = useState<string>("Academic");
@@ -22,8 +36,8 @@ const BookingId = ({ params }: { params: { bookingId: string } }) => {
   const [scheduleId, setScheduleId] = useState<string | null>(null);
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [userStatus, setUserStatus] = useState<string | null>(null); // New state for user status
 
-  //console.log(userId);
   const router = useRouter();
 
   // Function to fetch schedule data based on selected date
@@ -39,42 +53,62 @@ const BookingId = ({ params }: { params: { bookingId: string } }) => {
     }
   };
 
+  // Fetch user status on component mount
   useEffect(() => {
-    setUserId(getUserIdOnlyFromToken());
-    console.log("userid", userId);
-  }, [userId]);
+    const fetchUserStatus = async () => {
+      const id = getUserIdOnlyFromToken();
+      setUserId(id);
 
-  // Use useEffect to trigger fetch when 'value' (selected date) changes
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/v1/user/status/${id}`
+        );
+        const data = response.data;
+        console.log(data.user.status); //undefined
+        setUserStatus(data.user.status);
+        //console.log(userStatus);
+        // Assuming response includes 'status' field
+      } catch (error) {
+        console.error("Error fetching user status:", error);
+      }
+    };
+
+    fetchUserStatus();
+  }, []);
+
+  // Fetch schedule data when 'value' (selected date) changes
   useEffect(() => {
     if (value instanceof Date) {
       fetchScheduleData(value);
     }
   }, [value]);
+
   const handleSlotSelect = (slotId: string, scheduleId: string) => {
     setSelectedSlotId(slotId);
     setScheduleId(scheduleId);
   };
 
   const handleProceed = async () => {
+    if (userStatus !== "completed") {
+      toast.error("Booking is only available for users with completed status.");
+      return;
+    }
+
     if (selectedSlotId) {
       try {
-        console.log("come", userId);
-        console.log(selectedSlotId, testType, testSystem);
-        // Make the API call to book the selected slot
         const response = await axios.post(
           `http://localhost:5000/api/v1/user/book-slot`,
           {
             slotId: selectedSlotId,
             userId,
-            scheduleId: scheduleId,
+            scheduleId,
             status: "active",
             testType,
             testSystem,
           }
         );
-        //console.log("Booking successful:", response.data);
         toast.success("Slot booked successfully!");
-        router.push(`/dashboard`); // Optional: show confirmation to the user
+        router.push(`/dashboard`);
       } catch (error: any) {
         console.error("Error booking slot:", error);
         toast.error(error.response.data.message);

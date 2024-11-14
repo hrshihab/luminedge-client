@@ -1,10 +1,18 @@
 "use client";
 import axios from "axios";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 
+interface Booking {
+  _id: string;
+  bookingDate: string;
+  startTime: string;
+  status: string;
+}
+
 const Table = ({ userId }: { userId: string }) => {
-  const [bookings, setBookings] = useState([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
 
   useEffect(() => {
     // Fetch bookings when the component mounts
@@ -51,7 +59,7 @@ const Table = ({ userId }: { userId: string }) => {
       </thead>
       <tbody>
         {/* Row mapping */}
-        {bookings.map((booking: any, index: number) => (
+        {bookings.map((booking: Booking, index: number) => (
           <tr key={booking._id}>
             <td>{index + 1}</td>
             <td>IELTS</td>
@@ -61,17 +69,19 @@ const Table = ({ userId }: { userId: string }) => {
 
             {/* Re-schedule Button */}
             <td>
-              <button
-                disabled={booking.status !== "active"}
-                onClick={() => onDeleteBooking(booking._id)} // Call delete function
-                className={`px-4 py-2 rounded ${
-                  booking.status === "active"
-                    ? "bg-blue-500 text-white hover:bg-blue-600"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                }`}
-              >
-                Re-schedule
-              </button>
+              <Link href={`/courses`}>
+                <button
+                  disabled={booking.status !== "active"}
+                  onClick={() => onDeleteBooking(booking._id)} // Call delete function
+                  className={`px-4 py-2 rounded ${
+                    booking.status === "active"
+                      ? "bg-[#FACE39] text-gray-900 hover:bg-black hover:text-white"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
+                >
+                  Re-schedule
+                </button>
+              </Link>
             </td>
           </tr>
         ))}

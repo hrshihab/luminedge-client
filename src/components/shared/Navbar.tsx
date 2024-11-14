@@ -1,8 +1,12 @@
+import { signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { FaPhone } from "react-icons/fa6";
 
 const Navbar = () => {
+  const handleLogout = () => {
+    signOut({ callbackUrl: "/" }); // Redirect to home page after logging out
+  };
   return (
     <div className="navbar bg-[#face39] h-[90px]   border-b px-[10px]">
       <div className="navbar-start ">
