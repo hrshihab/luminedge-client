@@ -5,7 +5,7 @@ import "react-calendar/dist/Calendar.css";
 import axios from "axios";
 import { Schedule } from "@/app/types";
 import { MdOutlinePersonOutline } from "react-icons/md";
-import { getUserIdFromToken } from "@/app/helpers/jwt";
+import { getUserIdFromToken, getUserIdOnlyFromToken } from "@/app/helpers/jwt";
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
@@ -20,7 +20,7 @@ const BookingId = ({ params }: { params: { bookingId: string } }) => {
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
 
-  console.log(userId);
+  //console.log(userId);
 
   // Function to fetch schedule data based on selected date
   const fetchScheduleData = async (selectedDate: Date) => {
@@ -36,7 +36,8 @@ const BookingId = ({ params }: { params: { bookingId: string } }) => {
   };
 
   useEffect(() => {
-    setUserId(getUserIdFromToken());
+    setUserId(getUserIdOnlyFromToken());
+    console.log("userid", userId);
   }, [userId]);
 
   // Use useEffect to trigger fetch when 'value' (selected date) changes
@@ -65,7 +66,7 @@ const BookingId = ({ params }: { params: { bookingId: string } }) => {
             testSystem,
           }
         );
-        console.log("Booking successful:", response.data);
+        //console.log("Booking successful:", response.data);
         alert("Slot booked successfully!"); // Optional: show confirmation to the user
       } catch (error) {
         console.error("Error booking slot:", error);
@@ -75,7 +76,7 @@ const BookingId = ({ params }: { params: { bookingId: string } }) => {
   };
 
   return (
-    <div className="w-full mx-auto">
+    <div className="w-[80%] mx-auto">
       <div className="flex flex-col items-start justify-center my-8">
         <h3 className="text-xl text-gray-800 font-semibold">
           Please Select Your

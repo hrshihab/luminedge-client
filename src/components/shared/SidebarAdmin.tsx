@@ -4,7 +4,7 @@ import { TbMoneybag, TbReport } from "react-icons/tb";
 
 import { IoCloudDownloadOutline } from "react-icons/io5";
 
-const Sidebar = () => {
+const SidebarAdmin = () => {
   return (
     <div className="flex flex-col w-[100%]   ">
       <Link href="/" className="mb-5 ml-5   ">
@@ -63,25 +63,25 @@ const Sidebar = () => {
         <li className="hover:bg-[#FACE39] hover:text-black ">
           <Link href="/dashboard/user-info">
             <IoBagRemoveOutline className="h-5 w-5 mr-2" />
-            Exam
+            Inbox
           </Link>
         </li>
         <li className="hover:bg-[#FACE39] hover:text-black ">
           <Link href="/dashboard/settings">
             <TbMoneybag className="h-5 w-5 mr-2" />
-            Policies
+            Students
           </Link>
         </li>
         <li className="hover:bg-[#FACE39] hover:text-black ">
           <Link href="/dashboard/settings">
             <IoCloudDownloadOutline className="h-5 w-5 mr-2" />
-            Download TRFS
+            Tests
           </Link>
         </li>
         <li className="hover:bg-[#FACE39] hover:text-black ">
           <Link href="/dashboard/settings">
             <IoWalletOutline className="h-5 w-5 mr-2" />
-            Payment
+            Files
           </Link>
         </li>
         <li className="hover:bg-[#FACE39] hover:text-black ">
@@ -95,4 +95,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default SidebarAdmin;

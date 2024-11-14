@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Course } from "@/app/types";
 import { FaLongArrowAltRight } from "react-icons/fa";
+import Link from "next/link";
 
 const CourseCard = ({ course }: { course: Course }) => {
   console.log(course);
@@ -11,17 +12,19 @@ const CourseCard = ({ course }: { course: Course }) => {
       <figure>
         <Image src={course.image} alt={course.name} width={308} height={268} />
       </figure>
-      <div className="card-body bg-black text-gray-400 hover:text-black hover:bg-[#FACE39] rounded-b-lg">
-        <p className="text-xs  ">
-          Very different from conventional <br />
-          agency, this one is easier, easier to learn and easy to remember
-        </p>
-        <div className="card-actions justify-start ">
-          <div className="flex items-center gap-2 mt-3 ">
-            Book Now <FaLongArrowAltRight />
+      <Link href={`/booking/${course._id}`}>
+        <div className="card-body bg-black text-gray-400 hover:text-black hover:bg-[#FACE39] rounded-b-lg">
+          <p className="text-xs  ">
+            Very different from conventional <br />
+            agency, this one is easier, easier to learn and easy to remember
+          </p>
+          <div className="card-actions justify-start ">
+            <div className="flex items-center gap-2 mt-3 ">
+              Book Now <FaLongArrowAltRight />
+            </div>
           </div>
         </div>
-      </div>
+      </Link>
     </div>
   );
 };

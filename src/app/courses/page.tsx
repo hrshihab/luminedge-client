@@ -9,7 +9,7 @@ const CoursesPage = async () => {
   const data = await courses.json();
   //console.log(data.courses);
   return (
-    <div className="flex flex-col justify-center items-start ">
+    <div className="flex flex-col justify-center items-start w-[80%] mx-auto">
       <div className="flex flex-col mt-[80px] ">
         <h1 className="text-3xl font-semibold">Book Your</h1>
         <h1 className="text-3xl font-bold w-fit bg-[#FACE39] p-2">
