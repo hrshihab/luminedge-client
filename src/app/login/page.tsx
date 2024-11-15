@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import { getUserIdFromToken } from "../helpers/jwt";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
 
 export type FormValues = {
   email: string;
@@ -17,6 +19,7 @@ export type FormValues = {
 const LoginPage = () => {
   const [user, setUser] = useState<any>(null); // Store user details here
   const [isLoading, setIsLoading] = useState<boolean>(false); // To manage loading state
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -116,7 +119,7 @@ const LoginPage = () => {
           </p>
         </div>
 
-        <div className="card w-[60%] h-[80%] mx-auto">
+        <div className="card shadow-lg card-body w-[60%] h-[100%] mx-auto">
           <h1 className=" text-3xl font-bold mt-10">Sign in</h1>
           <form onSubmit={handleSubmit(onSubmit)} className="">
             <div className="form-control mt-8 mb-3">
@@ -126,7 +129,7 @@ const LoginPage = () => {
               <input
                 type="email"
                 {...register("email")}
-                placeholder="Input your email here"
+                placeholder="enter your email"
                 className="input input-bordered border-[#FACE39]"
                 required
               />
@@ -136,19 +139,28 @@ const LoginPage = () => {
               <label className="label">
                 <span className="label-text font-bold ml-2">Password</span>
               </label>
-              <input
-                {...register("password")}
-                type="password"
-                placeholder="Input your password here"
-                className="input input-bordered border-[#FACE39]"
-                required
-              />
+              <div className="relative">
+                <input
+                  {...register("password")}
+                  type={showPassword ? "text" : "password"}
+                  placeholder="********"
+                  className="input w-full input-bordered border-[#FACE39]"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
-            <p className="text-xs text-end text-gray-500 mt-3 mb-20">
+            <p className="text-xs text-end text-gray-500 mt-3 mb-10">
               Forgot password?
             </p>
 
-            <div className="form-control mt-6">
+            <div className="form-control mt-4">
               <button type="submit" className="btn bg-[#FACE39]">
                 Sign in
               </button>
@@ -156,7 +168,9 @@ const LoginPage = () => {
           </form>
           <p className="text-center">Or </p>
           <div className="border-2 border-[#FACE39] rounded-xl py-2 my-6 mx-auto w-full flex justify-center mb-10 mt-2">
-            <span className=" font-bold">Sign in with Google</span>
+            <span className=" font-bold flex items-center gap-2">
+              <FcGoogle /> Sign in with Google
+            </span>
           </div>
           <p className="text-center">
             Don&apos;t have an account?{" "}

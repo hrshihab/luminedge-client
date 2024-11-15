@@ -3,12 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
-
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { registerUser } from "../utils/actions/registerUser";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-
+import { useState } from "react";
 export type UserData = {
   firstName: string;
   lastName: string;
@@ -43,6 +43,9 @@ const RegisterPage = () => {
   // Watch password to validate confirm password
   const password = watch("password");
   console.log(password);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const onSubmit = async (data: UserData) => {
     console.log("clicked");
@@ -136,7 +139,7 @@ const RegisterPage = () => {
           </p>
         </div>
 
-        <div className="card w-[80%] h-[80%] mx-auto">
+        <div className="card shadow-lg card-body  w-[80%] h-[100%] mx-auto">
           <h1 className="text-3xl font-bold mt-10">Sign Up</h1>
           <form onSubmit={handleSubmit(onSubmit)} className="">
             <div className="grid grid-cols-2 gap-4 mt-8 mb-3">
@@ -152,7 +155,7 @@ const RegisterPage = () => {
                   {...register("firstName", {
                     required: "First name is required",
                   })}
-                  placeholder="Uzzal"
+                  placeholder=""
                   className="input bg-gray-50"
                 />
                 {errors.firstName && (
@@ -174,7 +177,7 @@ const RegisterPage = () => {
                   {...register("lastName", {
                     required: "Last name is required",
                   })}
-                  placeholder="Saha"
+                  placeholder=""
                   className="input bg-gray-50"
                 />
                 {errors.lastName && (
@@ -197,7 +200,7 @@ const RegisterPage = () => {
                 {...register("phoneNumber", {
                   required: "Phone number is required",
                 })}
-                placeholder="+8801318456895"
+                placeholder=""
                 className="input bg-gray-50"
               />
               {errors.phoneNumber && (
@@ -211,7 +214,7 @@ const RegisterPage = () => {
             <div className="form-control mb-3">
               <label className="label">
                 <span className="label-text text-gray-600 ml-2">
-                  Passport Number
+                  Passport Number or NID Number
                 </span>
               </label>
               <input
@@ -219,7 +222,7 @@ const RegisterPage = () => {
                 {...register("passportNumber", {
                   required: "Passport number is required",
                 })}
-                placeholder="123654789"
+                placeholder=""
                 className="input bg-gray-50"
               />
               {errors.passportNumber && (
@@ -237,7 +240,7 @@ const RegisterPage = () => {
               <input
                 type="email"
                 {...register("email", { required: "Email is required" })}
-                placeholder="example@gmail.com"
+                placeholder=""
                 className="input bg-gray-50"
               />
               {errors.email && (
@@ -246,25 +249,38 @@ const RegisterPage = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              {/* Password */}
+              {/* Password Field */}
               <div className="form-control mb-3">
                 <label className="label">
                   <span className="label-text text-gray-600 ml-2">
                     Password
                   </span>
                 </label>
-                <input
-                  type="password"
-                  {...register("password", {
-                    required: "Password is required",
-                    minLength: {
-                      value: 8,
-                      message: "Password must be at least 8 characters",
-                    },
-                  })}
-                  placeholder="8+ strong characters"
-                  className="input bg-gray-50"
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    {...register("password", {
+                      required: "Password is required",
+                      minLength: {
+                        value: 8,
+                        message: "Password must be at least 8 characters",
+                      },
+                    })}
+                    className="input bg-gray-50 w-full"
+                    placeholder=""
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  >
+                    {showPassword ? (
+                      <FaEyeSlash className="w-5 h-5 text-gray-600" />
+                    ) : (
+                      <FaEye className="w-5 h-5 text-gray-600" />
+                    )}
+                  </button>
+                </div>
                 {errors.password && (
                   <p className="text-red-500 text-sm">
                     {errors.password.message}
@@ -272,23 +288,36 @@ const RegisterPage = () => {
                 )}
               </div>
 
-              {/* Confirm Password */}
+              {/* Confirm Password Field */}
               <div className="form-control mb-3">
                 <label className="label">
                   <span className="label-text text-gray-600 ml-2">
                     Confirm Password
                   </span>
                 </label>
-                <input
-                  type="password"
-                  {...register("confirmPassword", {
-                    required: "Please confirm your password",
-                    validate: (value) =>
-                      value === password || "Passwords do not match",
-                  })}
-                  placeholder="8+ strong characters"
-                  className="input bg-gray-50"
-                />
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    {...register("confirmPassword", {
+                      required: "Confirm Password is required",
+                      validate: (value) =>
+                        value === password || "Passwords do not match",
+                    })}
+                    className="input bg-gray-50 w-full"
+                    placeholder=""
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  >
+                    {showConfirmPassword ? (
+                      <FaEyeSlash className="w-5 h-5 text-gray-600" />
+                    ) : (
+                      <FaEye className="w-5 h-5 text-gray-600" />
+                    )}
+                  </button>
+                </div>
                 {errors.confirmPassword && (
                   <p className="text-red-500 text-sm">
                     {errors.confirmPassword.message}
@@ -310,7 +339,9 @@ const RegisterPage = () => {
                 <span className="label-text ml-2">
                   I agree to all{" "}
                   <span className="text-[#FACE39] font-semibold">
-                    terms and conditions
+                    <Link href="/terms-and-conditions">
+                      terms and conditions
+                    </Link>
                   </span>
                 </span>
               </label>
